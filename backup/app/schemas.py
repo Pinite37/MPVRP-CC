@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, EmailStr
 from typing import Optional
 
 
@@ -21,14 +21,82 @@ class InstanceGenerationRequest(BaseModel):
 
 
 class InstanceGenerationResponse(BaseModel):
-    """Réponse de génération d'instance avec le contenu du fichier"""
     filename: str
     content: str
 
 
 class SolutionVerificationResponse(BaseModel):
-    """Réponse de vérification de solution"""
     feasible: bool
     errors: list[str]
     metrics: dict
 
+
+class UserBase(BaseModel):
+    team_name: str
+    email: EmailStr
+
+class UserCreate(UserBase):
+    password: str
+
+class UserResponse(UserBase):
+    id: int
+    class Config:
+        from_attributes = True
+
+
+#SCORING & RESULTS
+class InstanceDetail(BaseModel):
+    instance: str
+    category: str
+    feasible: bool
+    distance: float
+    transition_cost: float
+    errors: list[str]
+
+class SubmissionResultResponse(BaseModel):
+    submission_id: int
+    submitted_at: str
+    total_score: float
+    is_fully_feasible: bool
+    total_valid_instances: str
+    total_valid_instances_per_category: Optional[str] = None
+    is_ready: bool
+    processor_info: Optional[str] = None    #rapport de structure du ZIP
+    instances_details: list[InstanceDetail]
+
+    class Config:
+        from_attributes = True
+
+
+# HISTORIQUE
+class HistoryEntry(BaseModel):
+    submission_id: int
+    submission_number: int                   
+    submitted_at: str                      
+    score: float
+    valid_instances: str
+    is_fully_feasible: bool
+
+class TeamHistoryResponse(BaseModel):
+    team_name: str
+    total_submissions: int
+    history: list[HistoryEntry]
+
+
+#LEADERBOARD 
+
+class LeaderboardEntry(BaseModel):
+    rank: int
+    team: str
+    score: float
+    instances_validated: str
+    last_submission: str # Important que ce soit en str, on envoie .isoformat()
+
+
+# JWT 
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+class TokenData(BaseModel):
+    user_id: Optional[str] = None

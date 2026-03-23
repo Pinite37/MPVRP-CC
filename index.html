@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,8 +23,13 @@
             <li><a href="#introduction">Introduction</a></li>
             <li><a href="#documentation">Documentation</a></li>
             <li><a href="#instances">Instances</a></li>
-            <li><a href="#visualization">Visualization</a></li>
-            <li><a href="#tools">Tools</a></li>
+            <li><a href="#visualization">Vizualisation</a></li>
+            <li><a href="#tools">Outils</a></li>
+            <li><a href="pages/scoreboard.html">Scoreboard</a></li>
+            <li><a href="pages/submission.html" class="nav-cta">Submission</a></li>
+            <li id="nav-logout" style="display:none;">
+                <a href="#" onclick="logoutFromIndex()" style="color:#e74c3c;">Logout</a>
+            </li>
         </ul>
     </nav>
 </header>
@@ -45,7 +50,12 @@
 <section id="documentation">
     <h2>Documentation</h2>
     <p>
-        Detailed problem specifications and instance structures can be found in the <a href="https://raw.githubusercontent.com/IFRI-AI-Classes/MPVRP-CC/main/docs/problem_definition.pdf" target="_blank">overview</a> and <a href="https://raw.githubusercontent.com/IFRI-AI-Classes/MPVRP-CC/main/docs/instance_description.pdf" target="_blank">data format</a> sections, respectively. Our dataset includes 50 instances partitioned into small, medium, and large categories to reflect varying scales of stations, depots, and product quantities. Although reference solutions are not included, the expected submission format is outlined <a href="https://raw.githubusercontent.com/IFRI-AI-Classes/MPVRP-CC/main/docs/solution_description.pdf" target="_blank">here</a>.
+        Detailed problem specifications and instance structures can be found in the
+        <a href="https://raw.githubusercontent.com/IFRI-AI-Classes/MPVRP-CC/main/docs/problem_definition.pdf" target="_blank">overview</a>
+        and
+        <a href="https://raw.githubusercontent.com/IFRI-AI-Classes/MPVRP-CC/main/docs/instance_description.pdf" target="_blank">data format</a>
+        sections, respectively. Our dataset includes 50 instances partitioned into small, medium, and large categories to reflect varying scales of stations, depots, and product quantities. Although reference solutions are not included, the expected submission format is outlined
+        <a href="https://raw.githubusercontent.com/IFRI-AI-Classes/MPVRP-CC/main/docs/solution_description.pdf" target="_blank">here</a>.
     </p>
 </section>
 
@@ -93,7 +103,7 @@
 </section>
 
 <section id="visualization">
-    <h2>Visualization</h2>
+    <h2>Visualisation</h2>
     <p>
         Understanding and analyzing routing solutions is crucial for validating algorithms and communicating results. Our interactive visualization tool brings MPVRP-CC solutions to life, allowing you to explore vehicle routes, depot inventories, and delivery sequences in an intuitive graphical interface.
     </p>
@@ -104,31 +114,37 @@
 </section>
 
 <section id="tools">
-    <h2>Tools</h2>
+    <h2>Outils</h2>
     <p>
-        We provide a suite of tools to assist in model testing, including a validator for solution certification and a synthetic instance generator. For implementation details and endpoint specifications, visit the official <a href="https://mpvrp-cc.onrender.com/docs" target="_blank">documentation</a>.
+        We provide a suite of tools to assist in model testing, including a validator for solution certification and a synthetic instance generator. For implementation details and endpoint specifications, visit the official
+        <a href="https://mpvrp-cc.onrender.com/docs" target="_blank">documentation</a>.
     </p>
 </section>
 
 <footer>
-    <p>
-        Laboratory of Research in Computer Science and Applications (LRSIA), 2026
-    </p>
+    <p>Laboratory of Research in Computer Science and Applications (LRSIA), 2026</p>
 </footer>
 
 <script>
+    // ── Nav mobile ───────────────────────────────────────────
     const mobileMenu = document.getElementById('mobile-menu');
-    const navLinks = document.getElementById('nav-links');
+    const navLinks   = document.getElementById('nav-links');
 
-    mobileMenu.addEventListener('click', function() {
-        navLinks.classList.toggle('active');
+    mobileMenu.addEventListener('click', () => navLinks.classList.toggle('active'));
+    document.querySelectorAll('.nav-links a').forEach(link => {
+        link.addEventListener('click', () => navLinks.classList.remove('active'));
     });
 
-    // Close menu when clicking a link
-    document.querySelectorAll('.nav-links a').forEach(link => {
-        link.addEventListener('click', function() {
-            navLinks.classList.remove('active');
-        });
+    // ── Logout conditionnel ───────────────────────────────────
+    function logoutFromIndex() {
+        localStorage.removeItem('token');
+        window.location.replace(window.location.pathname);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        if (localStorage.getItem('token')) {
+            document.getElementById('nav-logout').style.display = 'inline';
+        }
     });
 </script>
 

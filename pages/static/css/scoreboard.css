@@ -1,0 +1,50 @@
+.leaderboard-meta {
+    color: #888;
+    font-size: 15px;
+    margin-bottom: 25px;
+}
+
+.leaderboard-meta span {
+    color: #3C27F5;
+    font-weight: bold;
+}
+
+/* Podium top 3 */
+tr.rank-1 td { background: #fffbea; }
+tr.rank-2 td { background: #f8f8f8; }
+tr.rank-3 td { background: #fff5ee; }
+
+tr.rank-1 td:first-child,
+tr.rank-2 td:first-child,
+tr.rank-3 td:first-child {
+    font-size: 20px;
+    text-align: center;
+}
+
+/* État chargement / vide / erreur */
+.lb-state {
+    color: #888;
+    font-style: italic;
+    margin: 20px 0;
+    font-size: 15px;
+}
+
+.lb-error { color: #c0392b; font-style: normal; }
+
+/* Bouton refresh */
+.btn-refresh {
+    background: none;
+    border: 1px solid #3C27F5;
+    color: #3C27F5;
+    cursor: pointer;
+    padding: 5px 14px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: inherit;
+    margin-left: 12px;
+    transition: background 0.15s, color 0.15s;
+    vertical-align: middle;
+}
+
+.btn-refresh:hover:not(:disabled) { background: #3C27F5; color: #fff; }
+.btn-refresh:disabled { opacity: 0.5; cursor: not-allowed; }

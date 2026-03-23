@@ -65,6 +65,9 @@ db.sqlite3-journal
 instance/
 .webassets-cache
 
+# Backup
+.bak
+
 # Scrapy stuff:
 .scrapy
 
@@ -213,3 +216,4 @@ __marimo__/
 .vscode/
 
 backup/core/model/modelisation.py
+mpvrp_scoring.db

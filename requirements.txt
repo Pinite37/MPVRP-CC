@@ -7,6 +7,15 @@ python-multipart
 aiofiles
 numpy
 
+# For auth 
+python-dotenv 
+pydantic[email]
+passlib[bcrypt] 
+bcrypt==3.1.7
+python-jose[cryptography] 
+#jwt
+
+
 # For testing
 pytest
 httpx

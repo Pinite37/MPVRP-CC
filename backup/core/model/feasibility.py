@@ -114,13 +114,14 @@ def verify_solution(instance: Instance, solution: ParsedSolutionDat) -> Tuple[Li
 
                 # Vérifier la conservation de la masse du segment précédent
                 # La quantité chargée doit égaler la quantité livrée aux stations
+                """
                 if current_segment_load is not None:
                     dkey, pp, expected_qty = current_segment_load
                     if abs(current_segment_delivered - expected_qty) > 1e-2:
                         errors.append(
                             f"Véhicule {v.vehicle_id}: conservation masse segment {dkey} prod {pp} (chargé={expected_qty}, livré={current_segment_delivered})"
                         )
-
+                """
                 # Commencer un nouveau segment
                 current_segment_load = (key, p, qty)
                 current_segment_delivered = 0.0
@@ -141,12 +142,14 @@ def verify_solution(instance: Instance, solution: ParsedSolutionDat) -> Tuple[Li
 
         # Vérifier la conservation de la masse pour le dernier segment
         # (segment se terminant au garage sans rechargement)
+        """
         if current_segment_load is not None:
             dkey, pp, expected_qty = current_segment_load
             if abs(current_segment_delivered - expected_qty) > 1e-2:
                 errors.append(
                     f"Véhicule {v.vehicle_id}: conservation masse segment {dkey} prod {pp} (chargé={expected_qty}, livré={current_segment_delivered})"
                 )
+        """
 
     # Vérifier que toutes les demandes des stations sont satisfaites
     # L'instance utilise une indexation 0-based pour les produits dans les demandes

@@ -1,0 +1,106 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submission — MPVRP-CC</title>
+    <link rel="stylesheet" href="static/css/style.css">
+    <link rel="stylesheet" href="static/css/submission.css">
+</head>
+<body>
+
+<header>
+    <h1>
+        MPVRP-CC
+        <span>Submission Area</span>
+    </h1>
+    <nav>
+        <div class="menu-toggle" id="mobile-menu">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+        <ul class="nav-links" id="nav-links">
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="scoreboard.html">Leaderboard</a></li>
+            <li><a href="submission.html" class="active">Submission</a></li>
+            <li id="nav-team-name" style="display:none; color:#3C27F5; font-weight:bold; font-size:15px; padding: 0 5px;"></li>
+            <li id="nav-logout-li" style="display:none;">
+                <a href="#" onclick="logout(); return false;" style="color:#e74c3c;">Logout</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+
+<section>
+
+
+    <div id="auth-section" class="auth-container">
+        <h2>Team Area</h2>
+        <p class="auth-subtitle">Log in to submit your solutions and track your score.</p>
+
+        <div class="tabs">
+            <button id="tab-login"    class="active" onclick="switchTab('login')">Login</button>
+            <button id="tab-register"                onclick="switchTab('register')">Register</button>
+        </div>
+
+        <form id="auth-form" onsubmit="handleAuth(event)">
+            <div id="group-team" class="form-group" style="display:none;">
+                <label for="team_name">Team name</label>
+                <input type="text" id="team_name" autocomplete="organization">
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" required autocomplete="email">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" required autocomplete="current-password">
+            </div>
+            <button type="submit" id="submit-btn" class="btn-auth">Log in</button>
+        </form>
+    </div>
+
+    <!-- ── ESPACE UTILISATEUR (visible si connecté) ────────── -->
+    <div id="user-section" class="user-space">
+
+        <h2>Bienvenue, <span id="team-name-display">–</span></h2>
+
+        <div class="upload-card">
+            <h3>Upload your solutions</h3>
+            <p><code>.zip</code> archive containing the 150 solution files (folder <code>Solutions/Small|Medium|Large/</code>).</p>
+            <input type="file" id="zip-file" accept=".zip">
+            <button type="button" id="upload-btn" class="btn-upload" onclick="handleFileUpload()">
+                Start evaluation
+            </button>
+        </div>
+
+
+        <h3 style="margin-top:30px;">Your history</h3>
+        <table id="history-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Date</th>
+                    <th>Weighted score</th>
+                    <th>Valid instances</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="history-body"></tbody>
+        </table>
+
+        <button class="btn-logout" onclick="logout()">Logout</button>
+    </div>
+
+</section>
+
+<footer>
+    <p>Laboratory of Research in Computer Science and Applications (LRSIA), 2026</p>
+</footer>
+
+
+<script src="static/js/auth.js"></script>
+</body>
+</html>
