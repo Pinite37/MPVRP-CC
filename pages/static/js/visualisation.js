@@ -444,6 +444,12 @@ function mapNodeNumber(nodeStr, numGarages, numDepots, numStations) {
     }
 }
 
+function setTextContentById(id, value) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = value;
+}
+
 function updateFileStatus(type, filename) {
     const statusEl = document.getElementById(type + 'Status');
     const zoneEl = document.getElementById(type + 'Zone');
@@ -533,14 +539,14 @@ function initData() {
 
     // Update Stats
     const metrics = solution.metrics || {};
-    document.getElementById('stat-dist').textContent = (metrics.total_cost || solution.objective || 0).toFixed(2);
-    document.getElementById('stat-routing').textContent = (metrics.routing_cost || 0).toFixed(2);
-    document.getElementById('stat-exchanges').textContent = `0/${totalExchanges}`;
-    document.getElementById('stat-trucks').textContent = metrics.vehicles_used || trucks.length;
+    setTextContentById('stat-dist', (metrics.total_cost || solution.objective || 0).toFixed(2));
+    setTextContentById('stat-routing', (metrics.routing_cost || 0).toFixed(2));
+    // setTextContentById('stat-exchanges', `0/${totalExchanges}`);
+    setTextContentById('stat-trucks', metrics.vehicles_used || trucks.length);
 
     let totalSegs = trucks.reduce((sum, t) => sum + t.segments.length, 0);
-    document.getElementById('stat-segments').textContent = totalSegs;
-    document.getElementById('stat-status').textContent = solution.status || 'Loaded';
+    setTextContentById('stat-segments', totalSegs);
+    setTextContentById('stat-status', solution.status || 'Loaded');
 
     // Update Fleet Legend
     const legendEl = document.getElementById('fleet-legend');
@@ -1011,7 +1017,7 @@ function updateUI() {
     calculateCurrentExchangesAndDeliveries();
 
     // Update exchanges display
-    document.getElementById('stat-exchanges').textContent = `${currentExchanges}/${totalExchanges}`;
+    // document.getElementById('stat-exchanges').textContent = `${currentExchanges}/${totalExchanges}`;
 
     // Update depot inventory panel
     updateDepotInventoryPanel();
