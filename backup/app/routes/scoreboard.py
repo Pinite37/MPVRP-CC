@@ -6,7 +6,7 @@ from backup.database.db import get_db
 from backup.database import models_db as models
 from backup.app.schemas import LeaderboardEntry
 
-router = APIRouter(prefix="/scoreboard", tags=["scoreboard"])
+router = APIRouter(prefix="/scoreboard", tags=["scoreboard"], include_in_schema=False)
 
 @router.get("/", response_model=list[LeaderboardEntry])
 async def get_global_leaderboard(db: Session = Depends(get_db)):

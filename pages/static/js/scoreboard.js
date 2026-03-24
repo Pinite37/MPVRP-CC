@@ -1,4 +1,5 @@
-const API_URL = "http://localhost:8000";
+// load API_URL from .env file
+const API_URL = 'http://localhost:8000';
 
 // ── Nav mobile ───────────────────────────────────────────
 document.getElementById('mobile-menu').addEventListener('click', () => {

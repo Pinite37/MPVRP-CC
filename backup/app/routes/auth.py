@@ -7,7 +7,7 @@ from backup.database.db import get_db
 from backup.database import models_db as models
 from backup.core.auth import auth_logic
 
-router = APIRouter(prefix="/auth", tags=["Authentication"])
+router = APIRouter(prefix="/auth", tags=["Authentication"], include_in_schema=False)
 
 @router.post("/register", response_model=UserResponse)
 async def register_team(

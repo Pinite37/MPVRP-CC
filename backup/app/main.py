@@ -2,12 +2,17 @@ import os
 import shutil
 from contextlib import asynccontextmanager
 
+from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 import backup.database.models_db as models
 from backup.database.db import engine
 from backup.app.routes import generator, model, scoring, scoreboard, auth
+
+load_dotenv()
+FRONTEND_DEV_URL = os.getenv("FRONTEND_DEV_URL")
+FRONTEND_PROD_URL = os.getenv("FRONTEND_PROD_URL")
 
 
 @asynccontextmanager
@@ -36,7 +41,7 @@ app = FastAPI(
 # Configuration CORS pour permettre les appels depuis n'importe quelle origine
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[FRONTEND_DEV_URL, FRONTEND_PROD_URL, "*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -57,16 +62,12 @@ async def root():
         "documentation": "/docs",
         "endpoints": {
             "generator": "/generator/generate - POST: Génère une instance MPVRP-CC",
-            "model": "/model/verify - POST: Vérifie une solution pour une instance",
-            "scoring_1": "/scoring/submit/{user_id} - POST: Evalue la faisabilité des 150 solutions",
-            "scoring_2": "/scoring/result/{submission_id} - GET: Retourne les résultats détaillés de l'évaluation de la soumission",
-            "scoring_3": "scoring/history/{user_id} - GET: Retourne l'historique des soumissions de l'utilisateur",
-            "scoreboard": "/scoreboard/ - GET: Renvoie le classement officiel avec la meilleure soumission par équipe"
+            "model": "/model/verify - POST: Vérifie une solution pour une instance"
         }
     }
 
 
-@app.api_route("/health", methods=["GET", "HEAD"], tags=["Health"])
+@app.api_route("/health", methods=["GET", "HEAD"], tags=["Health"], include_in_schema=False)
 async def health_check():
     """Vérifie l'état de santé de l'API"""
     return {"status": "healthy"}

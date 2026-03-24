@@ -12,7 +12,7 @@ from backup.core.scoring.score_evaluation import process_full_submission
 from backup.core.auth.auth_logic import get_current_user
 from backup.app.schemas import SubmissionResultResponse, TeamHistoryResponse
 
-router = APIRouter(prefix="/scoring", tags=["Scoring"])
+router = APIRouter(prefix="/scoring", tags=["Scoring"], include_in_schema=False)
 
 
 def run_scoring_in_background(submission_id: int, zip_path: str):

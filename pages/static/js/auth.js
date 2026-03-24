@@ -9,6 +9,20 @@ document.getElementById('mobile-menu').addEventListener('click', () => {
 // UTILITAIRES
 // ═══════════════
 
+function togglePasswordVisibility() {
+    const passwordInput = document.getElementById('password');
+    const toggleBtn = document.getElementById('toggle-password');
+    const icon = document.getElementById('password-icon');
+
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        icon.innerText = '👀';
+    } else {
+        passwordInput.type = 'password';
+        icon.innerText = '🙈';
+    }
+}
+
 function showMessage(message, type = 'error') {
     const existing = document.getElementById('msg-banner');
     if (existing) existing.remove();
@@ -211,7 +225,7 @@ function displayResult(data) {
             <thead><tr><th>Metric</th><th>Value</th></tr></thead>
             <tbody>
                 <tr><td>Weighted Total Score</td><td><strong>${data.total_score.toFixed(4)}</strong></td></tr>
-                <tr><td>Valid Instances</td><td>${data.total_valid_instances}</td></tr>
+                <tr><td>Valid Solutions</td><td>${data.total_valid_instances}</td></tr>
                 <tr><td>Full Feasibility</td><td>${data.is_fully_feasible ? "Yes" : "No"}</td></tr>
             </tbody>
         </table>
