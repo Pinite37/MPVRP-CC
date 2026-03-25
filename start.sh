@@ -5,12 +5,22 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
 
-# Generate and export a fresh SECRET_KEY at launch time.
-SECRET_KEY="$(python -c "import secrets; print('SECRET_KEY=' + secrets.token_urlsafe(32))")"
-export "$SECRET_KEY"
+# Production-safe defaults (override with env vars).
+HOST="${HOST:-0.0.0.0}"
+PORT="${PORT:-8000}"
+WORKERS="${WORKERS:-2}"
 
 # Export DATABASE_URL (uses existing value if already set).
 export DATABASE_URL="${DATABASE_URL:-sqlite:///./mpvrp_scoring.db}"
 
-exec uvicorn backup.app.main:app --host 0.0.0.0 --port 8000 --reload
+# Require stable secret key in environments with external users.
+# Generate and export a fresh SECRET_KEY at launch time.
+SECRET_KEY="$(python -c "import secrets; print('SECRET_KEY=' + secrets.token_urlsafe(32))")"
+export "$SECRET_KEY"
+if [[ -z "${SECRET_KEY:-}" ]]; then
+  echo "ERROR: SECRET_KEY is required. Set it in your environment before starting the server." >&2
+  exit 1
+fi
+
+exec uvicorn backup.app.main:app --host "$HOST" --port "$PORT" --workers "$WORKERS"
 

@@ -183,9 +183,9 @@ Use the helper script from the project root to launch the API with environment v
 
 What it does:
 
-- Generates and exports `SECRET_KEY` using Python `secrets.token_urlsafe(32)`
+- Requires `SECRET_KEY` to be set in the environment before startup
 - Exports `DATABASE_URL` (defaults to `sqlite:///./mpvrp_scoring.db` if not already set)
-- Starts the server with `uvicorn backup.app.main:app --host 0.0.0.0 --port 8000 --reload`
+- Starts the server with `uvicorn backup.app.main:app --host 0.0.0.0 --port 8000 --workers 2`
 
 After startup:
 

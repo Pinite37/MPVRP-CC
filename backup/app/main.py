@@ -1,5 +1,6 @@
 import os
 import shutil
+import logging
 from contextlib import asynccontextmanager
 
 from dotenv import load_dotenv
@@ -11,8 +12,35 @@ from backup.database.db import engine
 from backup.app.routes import generator, model, scoring, scoreboard, auth
 
 load_dotenv()
-FRONTEND_DEV_URL = os.getenv("FRONTEND_DEV_URL")
-FRONTEND_PROD_URL = os.getenv("FRONTEND_PROD_URL")
+FRONTEND_DEV_URL = os.getenv("FRONTEND_DEV_URL", "")
+FRONTEND_PROD_URL = os.getenv("FRONTEND_PROD_URL", "")
+
+logging.basicConfig(
+    level=os.getenv("LOG_LEVEL", "INFO").upper(),
+    format="%(asctime)s %(levelname)s [%(name)s] %(message)s",
+)
+logger = logging.getLogger(__name__)
+
+
+def _build_allowed_origins() -> list[str]:
+    """Build a strict CORS allow-list from environment variables."""
+    allowed_origins_env = os.getenv("FRONTEND_ALLOWED_ORIGINS", "")
+    parsed = [origin.strip() for origin in allowed_origins_env.split(",") if origin.strip()]
+
+    if parsed:
+        return parsed
+
+    # Backward-compatible fallback when comma-separated variable is not set.
+    legacy_origins = [o for o in [FRONTEND_DEV_URL, FRONTEND_PROD_URL] if o]
+    if legacy_origins:
+        return legacy_origins
+
+    # Safe local fallback for development/test only.
+    return ["http://localhost:3000", "http://127.0.0.1:3000", "*"]
+
+
+ALLOWED_ORIGINS = _build_allowed_origins()
+logger.info("CORS allow-list configured with %s origin(s)", len(ALLOWED_ORIGINS))
 
 
 @asynccontextmanager
@@ -25,7 +53,7 @@ async def lifespan(app: FastAPI):
     if os.path.exists(temp_dir):
         orphans = os.listdir(temp_dir)
         if orphans:
-            print(f"[STARTUP] Nettoyage de {len(orphans)} fichier(s) orphelin(s) dans temp/")
+            logger.info("Startup cleanup: removing %s orphan file(s) in temp/", len(orphans))
             shutil.rmtree(temp_dir)
     os.makedirs(temp_dir, exist_ok=True)
 
@@ -41,7 +69,7 @@ app = FastAPI(
 # Configuration CORS pour permettre les appels depuis n'importe quelle origine
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[FRONTEND_DEV_URL, FRONTEND_PROD_URL, "*"],
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

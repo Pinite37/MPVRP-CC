@@ -77,7 +77,7 @@ async function loadLeaderboard() {
             </tr>
         `).join('');
 
-        countEl.innerText = `${data.length} Team${data.length > 1 ? 's' : ''} on the leaderboard`;
+        countEl.innerText = `${data.length} Team${data.length > 1 ? 's' : ''} on the scoreboard`;
         stateEl.style.display = 'none';
         tableEl.style.display = 'table';
 

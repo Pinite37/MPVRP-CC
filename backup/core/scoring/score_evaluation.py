@@ -2,6 +2,7 @@ import os
 import zipfile
 import shutil
 import json
+import logging
 
 from sqlalchemy.orm import Session
 
@@ -12,6 +13,8 @@ from backup.core.model.utils import parse_instance, parse_solution
 COEFFS = {"small": 1.0, "medium": 0.5, "large": 0.2}
 BIG_M  = 100000.0
 NUMBER_OF_INSTANCES_PER_CATEGORY = 50
+
+logger = logging.getLogger(__name__)
 
 BASE_DIR       = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 INSTANCES_ROOT = os.path.join(BASE_DIR, "data", "instances")
@@ -33,7 +36,7 @@ def _mark_submission_failed(submission_id: int, reason: str, db: Session):
             sub.processor_info       = reason
             db.commit()
     except Exception as e:
-        print(f"[WORKER {submission_id}] Impossible de marquer l'échec : {e}")
+        logger.exception("[WORKER %s] Unable to mark submission as failed: %s", submission_id, e)
 
 
 def _discover_category_dirs(extract_root: str) -> tuple[dict, list]:
