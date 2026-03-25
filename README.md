@@ -10,6 +10,7 @@ A comprehensive platform for generating, verifying, and evaluating solutions to 
 - [Project Structure](#project-structure)
 - [Installation](#installation)
 - [Usage](#usage)
+  - [Quick Start Script](#quick-start-script)
   - [API Endpoints](#api-endpoints)
   - [Web Interface](#web-interface)
 - [Development](#development)
@@ -171,6 +172,25 @@ MPVRP-CC/
 ---
 
 ## Usage
+
+### Quick Start Script
+
+Use the helper script from the project root to launch the API with environment variables preconfigured:
+
+```bash
+./start.sh
+```
+
+What it does:
+
+- Generates and exports `SECRET_KEY` using Python `secrets.token_urlsafe(32)`
+- Exports `DATABASE_URL` (defaults to `sqlite:///./mpvrp_scoring.db` if not already set)
+- Starts the server with `uvicorn backup.app.main:app --host 0.0.0.0 --port 8000 --reload`
+
+After startup:
+
+- API: `http://localhost:8000`
+- Docs: `http://localhost:8000/docs`
 
 ### API Endpoints
 

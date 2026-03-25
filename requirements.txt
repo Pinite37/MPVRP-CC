@@ -6,6 +6,9 @@ jinja2
 python-multipart
 aiofiles
 numpy
+uvicorn[standard]
+aiofiles
+httpx
 
 # For auth 
 python-dotenv 
