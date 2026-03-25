@@ -1,4 +1,4 @@
-name: Test the scripts
+name: CI
 
 on:
   push:

@@ -174,15 +174,6 @@ class TestFastAPIAppConfig:
 class TestApiEndpointsWithTestClient:
     """Test suite for API endpoints using TestClient."""
 
-    @pytest.fixture
-    def client(self):
-        """Create a test client."""
-        try:
-            from fastapi.testclient import TestClient
-            from backup.app.main import app
-            return TestClient(app)
-        except ImportError:
-            pytest.skip("fastapi testclient not available")
 
     def test_root_endpoint(self, client):
         """Test root endpoint returns welcome message."""
@@ -232,15 +223,6 @@ class TestApiEndpointsWithTestClient:
 class TestGeneratorEndpoint:
     """Test suite for generator endpoint."""
 
-    @pytest.fixture
-    def client(self):
-        """Create a test client."""
-        try:
-            from fastapi.testclient import TestClient
-            from backup.app.main import app
-            return TestClient(app)
-        except ImportError:
-            pytest.skip("fastapi testclient not available")
 
     def test_generate_instance_success(self, client):
         """Test successful instance generation."""
@@ -313,16 +295,6 @@ class TestGeneratorEndpoint:
 class TestModelEndpoint:
     """Test suite for model verification endpoint."""
 
-    @pytest.fixture
-    def client(self):
-        """Create a test client."""
-        try:
-            from fastapi.testclient import TestClient
-            from backup.app.main import app
-
-            return TestClient(app)
-        except ImportError:
-            pytest.skip("fastapi testclient not available")
 
     @pytest.fixture
     def sample_instance_content(self):
@@ -399,15 +371,6 @@ test
 class TestApiErrorHandling:
     """Test suite for API error handling."""
 
-    @pytest.fixture
-    def client(self):
-        """Create a test client."""
-        try:
-            from fastapi.testclient import TestClient
-            from backup.app.main import app
-            return TestClient(app)
-        except ImportError:
-            pytest.skip("fastapi testclient not available")
 
     def test_404_for_unknown_endpoint(self, client):
         """Test that unknown endpoints return 404."""
@@ -437,15 +400,6 @@ class TestApiErrorHandling:
 class TestAuthRegisterEndpoint:
     """Test suite for auth registration endpoint."""
 
-    @pytest.fixture
-    def client(self):
-        """Create a test client."""
-        try:
-            from fastapi.testclient import TestClient
-            from backup.app.main import app
-            return TestClient(app)
-        except ImportError:
-            pytest.skip("fastapi testclient not available")
 
     def test_register_success_with_json_body(self, client):
         """Register should accept JSON body and create a team."""
