@@ -1,5 +1,4 @@
-// load API_URL from .env file
-const API_URL = 'http://localhost:8000';
+const API_URL = window.APP_CONFIG?.API_URL || "https://mpvrppythonapi.pinite37.me";
 
 // ── Nav mobile ───────────────────────────────────────────
 document.getElementById('mobile-menu').addEventListener('click', () => {

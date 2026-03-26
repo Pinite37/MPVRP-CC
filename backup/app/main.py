@@ -2,6 +2,7 @@ import os
 import shutil
 import logging
 from contextlib import asynccontextmanager
+from urllib.parse import urlsplit
 
 from dotenv import load_dotenv
 from fastapi import FastAPI
@@ -22,21 +23,47 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
+def _normalize_origin(origin: str) -> str | None:
+    """Normalize CORS entries to scheme://host[:port] and drop invalid values."""
+    raw = origin.strip()
+    if not raw:
+        return None
+
+    parsed = urlsplit(raw)
+    if not parsed.scheme or not parsed.netloc:
+        logger.warning("Ignoring invalid CORS origin '%s'", origin)
+        return None
+
+    normalized = f"{parsed.scheme}://{parsed.netloc}"
+    if normalized != raw.rstrip("/"):
+        logger.warning("Normalized CORS origin '%s' to '%s'", origin, normalized)
+    return normalized
+
+
+def _normalized_unique(origins: list[str]) -> list[str]:
+    result: list[str] = []
+    for origin in origins:
+        normalized = _normalize_origin(origin)
+        if normalized and normalized not in result:
+            result.append(normalized)
+    return result
+
+
 def _build_allowed_origins() -> list[str]:
     """Build a strict CORS allow-list from environment variables."""
     allowed_origins_env = os.getenv("FRONTEND_ALLOWED_ORIGINS", "")
-    parsed = [origin.strip() for origin in allowed_origins_env.split(",") if origin.strip()]
+    parsed = _normalized_unique(allowed_origins_env.split(","))
 
     if parsed:
         return parsed
 
     # Backward-compatible fallback when comma-separated variable is not set.
-    legacy_origins = [o for o in [FRONTEND_DEV_URL, FRONTEND_PROD_URL] if o]
+    legacy_origins = _normalized_unique([FRONTEND_DEV_URL, FRONTEND_PROD_URL])
     if legacy_origins:
         return legacy_origins
 
     # Safe local fallback for development/test only.
-    return ["http://localhost:3000", "http://127.0.0.1:3000", "*"]
+    return ["http://localhost:3000", "http://127.0.0.1:3000"]
 
 
 ALLOWED_ORIGINS = _build_allowed_origins()
