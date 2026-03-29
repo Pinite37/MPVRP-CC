@@ -8,15 +8,15 @@ cd "$SCRIPT_DIR"
 # Production-safe defaults (override with env vars).
 HOST="${HOST:-0.0.0.0}"
 PORT="${PORT:-8000}"
-WORKERS="${WORKERS:-2}"
+WORKERS="${WORKERS:-1}"
 
 # Export DATABASE_URL (uses existing value if already set).
 export DATABASE_URL="${DATABASE_URL:-sqlite:///./mpvrp_scoring.db}"
-export FRONTEND_ALLOWED_ORIGINS="${FRONTEND_ALLOWED_ORIGINS:-https://ifri-ai-classes.github.io,https://ifri-ai-classes.github.io/MPVRP-CC,https://ifri-ai-classes.github.io/MPVRP-CC/pages}"
+export FRONTEND_PROD_URL="${FRONTEND_PROD_URL:-https://ifri-ai-classes.github.io}"
 
 # Require stable secret key in environments with external users.
 # Generate and export a fresh SECRET_KEY at launch time.
-export SECRET_KEY="$(python -c "import secrets; print(secrets.token_urlsafe(32))")"
+export SECRET_KEY="X2ZlC8ezhVReYCer02s7TdwRT10epQMjwZVKAFwTOE4"
 if [[ -z "${SECRET_KEY:-}" ]]; then
   echo "ERROR: SECRET_KEY is required. Set it in your environment before starting the server." >&2
   exit 1
