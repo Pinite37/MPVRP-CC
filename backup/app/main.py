@@ -8,7 +8,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from backup.app.routes import generator, model, scoring, scoreboard
 
 load_dotenv()
+
+FRONTEND_DEV_URL = os.getenv("FRONTEND_DEV_URL", "")
 FRONTEND_PROD_URL = os.getenv("FRONTEND_PROD_URL", "")
+FRONTEND_PROD_URL_2 = os.getenv("FRONTEND_PROD_URL_2", "")
 
 logging.basicConfig(
     level=os.getenv("LOG_LEVEL", "INFO").upper(),
@@ -17,7 +20,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-ALLOWED_ORIGINS = ["*", "http://localhost:3000", "http://127.0.0.1:3000", "https://ifri-ai-classes.github.io", FRONTEND_PROD_URL]
+ALLOWED_ORIGINS = [FRONTEND_PROD_URL, FRONTEND_PROD_URL_2, FRONTEND_DEV_URL]
 logger.info("CORS allow-list configured with %s origin(s)", len(ALLOWED_ORIGINS))
 
 
@@ -33,7 +36,7 @@ app.add_middleware(
     allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"],
+    allow_headers=["*"]
 )
 
 # Inclure les routes
