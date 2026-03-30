@@ -5,7 +5,6 @@ import os
 import sys
 import tempfile
 import pytest
-import numpy as np
 
 # Add the project root to sys.path for imports
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -18,66 +17,19 @@ from backup.core.model.schemas import (
 
 
 # ============================================================================
-# DATABASE INITIALIZATION FOR TESTS
+# API TEST CLIENT
 # ============================================================================
 
-@pytest.fixture(scope="session", autouse=True)
-def init_test_database():
-    """Initialize test database with proper schema before test session starts."""
-    import os
-    from backup.database.db import engine, Base
-    from backup.database import models_db as models
-    
-    # Use a test-specific database (in-memory or ephemeral)
-    os.environ.setdefault("DATABASE_URL", "sqlite:///:memory:")
-    
-    # Create all tables based on SQLAlchemy models
-    Base.metadata.create_all(bind=engine)
-    
-    yield
-    
-    # Cleanup: drop all tables after test session
-    Base.metadata.drop_all(bind=engine)
-
-
 @pytest.fixture
-def db_session():
-    """Provide a fresh database session for each test that needs it."""
-    from backup.database.db import SessionLocal, Base, engine
-    
-    # Create tables if not present
-    Base.metadata.create_all(bind=engine)
-    
-    session = SessionLocal()
-    try:
-        yield session
-    finally:
-        session.rollback()
-        session.close()
-
-
-@pytest.fixture
-def client(db_session):
-    """Provide a TestClient with initialized database for API tests."""
+def client():
+    """Provide a TestClient for API tests."""
     try:
         from fastapi.testclient import TestClient
         from backup.app.main import app
-        from backup.database.db import get_db
-        
-        # Override the get_db dependency to use our test session
-        app.dependency_overrides[get_db] = lambda: db_session
-        
-        test_client = TestClient(app)
-        yield test_client
+        with TestClient(app) as test_client:
+            yield test_client
     except ImportError:
         pytest.skip("fastapi testclient not available")
-    finally:
-        # Clean up dependency overrides after test
-        try:
-            from backup.app.main import app
-            app.dependency_overrides.clear()
-        except Exception:
-            pass
 
 
 # ============================================================================
