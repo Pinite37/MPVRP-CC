@@ -63,8 +63,24 @@ async function loadLeaderboard() {
 
 function formatDate(isoStr) {
     if (!isoStr) return '—';
-    const normalized = isoStr.replace(' ', 'T').replace(/Z?$/, 'Z');
-    const d = new Date(normalized);
-    if (isNaN(d)) return isoStr;
-    return d.toLocaleString('fr-FR', { timeZone: 'Africa/Porto-Novo' });
+
+    try {
+        const d = new Date(isoStr);
+        if (isNaN(d.getTime())) return isoStr;
+
+        const months = ['January', 'February', 'March', 'April', 'May', 'June',
+                        'July', 'August', 'September', 'October', 'November', 'December'];
+        const month = months[d.getUTCMonth()];
+        const day = d.getUTCDate();
+        const year = d.getUTCFullYear();
+
+        let hours = d.getUTCHours();
+        const minutes = String(d.getUTCMinutes()).padStart(2, '0');
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12 || 12;
+
+        return `${month} ${day}, ${year} ${hours}:${minutes} ${ampm} (UTC)`;
+    } catch (err) {
+        return isoStr;
+    }
 }

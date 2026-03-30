@@ -113,53 +113,57 @@ function displayResult(data) {
 
     const section = document.createElement('div');
     section.id = 'result-section';
+    section.className = 'result-section';
 
     section.innerHTML = `
-        <h2>Result - Submission #${data.submission_id}</h2>
-        <table>
-            <thead><tr><th>Metric</th><th>Value</th></tr></thead>
-            <tbody>
-                <tr><td>Weighted total score</td><td><strong>${Number(data.total_score).toFixed(4)}</strong></td></tr>
-                <tr><td>Valid solutions</td><td>${data.total_valid_instances}</td></tr>
-                <tr><td>Full feasibility</td><td>${data.is_fully_feasible ? 'Yes' : 'No'}</td></tr>
-            </tbody>
-        </table>
+        <div class="result-card">
+            <h2>Result - Submission #${data.submission_id}</h2>
 
-        ${data.processor_info ? `
-        <details style="margin-top:15px;">
-            <summary style="color:#c0392b;">ZIP structure report</summary>
-            <pre style="
-                background:#fdf2f2; border:1px solid #f5b7b1; border-radius:4px;
-                padding:12px; font-size:13px; line-height:1.6;
-                white-space:pre-wrap; word-break:break-word; margin-top:8px;
-            ">${data.processor_info}</pre>
-        </details>` : ''}
-
-        <details style="margin-top:15px;">
-            <summary>Instance details (${data.instances_details.length})</summary>
-            <table style="margin-top:10px; font-size:15px;">
+            <table class="result-metrics">
                 <thead>
                     <tr>
-                        <th>Instance</th><th>Category</th><th>Feasible</th>
-                        <th>Distance</th><th>Transition cost</th><th>Errors</th>
+                        <th>Metric</th><th>Value</th>
                     </tr>
                 </thead>
                 <tbody>
-                    ${data.instances_details.map(r => `
-                        <tr ${!r.feasible ? 'style="background:#fdf2f2;"' : ''}>
-                            <td>${r.instance}</td>
-                            <td>${r.category}</td>
-                            <td>${r.feasible ? 'Yes' : 'No'}</td>
-                            <td>${r.distance ?? '—'}</td>
-                            <td>${r.transition_cost ?? '—'}</td>
-                            <td style="color:#c0392b; font-size:13px;">
-                                ${r.errors.length > 0 ? r.errors.join('<br>') : '—'}
-                            </td>
-                        </tr>
-                    `).join('')}
+                    <tr><td>Weighted total score</td><td><strong>${Number(data.total_score).toFixed(4)}</strong></td></tr>
+                    <tr><td>Valid solutions</td><td>${data.total_valid_instances}</td></tr>
+                    <tr><td>Full feasibility</td><td>${data.is_fully_feasible ? 'Yes' : 'No'}</td></tr>
                 </tbody>
             </table>
-        </details>
+
+            ${data.processor_info ? `
+            <details class="result-details result-details--warning">
+                <summary>ZIP structure report</summary>
+                <pre class="result-pre">${data.processor_info}</pre>
+            </details>` : ''}
+
+            <details class="result-details">
+                <summary>Instance details (${data.instances_details.length})</summary>
+                <table class="result-instances">
+                    <thead>
+                        <tr>
+                            <th>Instance</th><th>Category</th><th>Feasible</th>
+                            <th>Distance</th><th>Transition cost</th><th>Errors</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${data.instances_details.map(r => `
+                            <tr class="${!r.feasible ? 'result-row--invalid' : ''}">
+                                <td>${r.instance}</td>
+                                <td>${r.category}</td>
+                                <td>${r.feasible ? 'Yes' : 'No'}</td>
+                                <td>${r.distance ?? '—'}</td>
+                                <td>${r.transition_cost ?? '—'}</td>
+                                <td class="result-errors">
+                                    ${r.errors.length > 0 ? r.errors.join('<br>') : '—'}
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </details>
+        </div>
     `;
 
     const uploadCard = document.querySelector('.upload-card');
