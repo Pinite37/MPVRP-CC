@@ -1,5 +1,6 @@
-from pydantic import BaseModel, Field, EmailStr
 from typing import Optional
+
+from pydantic import BaseModel, Field, EmailStr
 
 
 class InstanceGenerationRequest(BaseModel):
@@ -31,18 +32,6 @@ class SolutionVerificationResponse(BaseModel):
     metrics: dict
 
 
-class UserBase(BaseModel):
-    team_name: str
-    email: EmailStr
-
-class UserCreate(UserBase):
-    password: str
-
-class UserResponse(UserBase):
-    id: int
-    class Config:
-        from_attributes = True
-
 
 #SCORING & RESULTS
 class InstanceDetail(BaseModel):
@@ -61,14 +50,12 @@ class SubmissionResultResponse(BaseModel):
     total_valid_instances: str
     total_valid_instances_per_category: Optional[str] = None
     is_ready: bool
-    processor_info: Optional[str] = None    #rapport de structure du ZIP
+    processor_info: Optional[str] = None
     instances_details: list[InstanceDetail]
 
     class Config:
         from_attributes = True
 
-
-# HISTORIQUE
 class HistoryEntry(BaseModel):
     submission_id: int
     submission_number: int                   
@@ -82,21 +69,10 @@ class TeamHistoryResponse(BaseModel):
     total_submissions: int
     history: list[HistoryEntry]
 
-
-#LEADERBOARD 
-
 class LeaderboardEntry(BaseModel):
     rank: int
     team: str
     score: float
     instances_validated: str
-    last_submission: str # Important que ce soit en str, on envoie .isoformat()
+    last_submission: str
 
-
-# JWT 
-class Token(BaseModel):
-    access_token: str
-    token_type: str
-
-class TokenData(BaseModel):
-    user_id: Optional[str] = None
