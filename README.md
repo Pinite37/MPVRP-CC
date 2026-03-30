@@ -10,7 +10,7 @@ A comprehensive platform for generating, verifying, and evaluating solutions to 
 - [Project Structure](#project-structure)
 - [Installation](#installation)
 - [Usage](#usage)
-  - [Quick Start Script](#quick-start-script)
+  - [Quick Start](#quick-start)
   - [API Endpoints](#api-endpoints)
   - [Web Interface](#web-interface)
 - [Development](#development)
@@ -135,7 +135,8 @@ MPVRP-CC/
 ### Prerequisites
 
 - Python 3.12+
-- pip or uv package manager
+- `uv` package manager (recommended)
+- `pip` (optional, for `requirements.txt` workflow)
 
 ### Setup
 
@@ -145,23 +146,19 @@ MPVRP-CC/
    cd MPVRP-CC
    ```
 
-2. **Create a virtual environment**:
-   ```bash
-   python3.12 -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
-
-3. **Install dependencies**:
-   ```bash
-   pip install -r requirements.txt
-   ```
-   
-   Or using uv:
+2. **Install dependencies (recommended with uv)**:
    ```bash
    uv sync
    ```
 
-4. **Set up environment variables** (if needed):
+   Optional `pip` workflow:
+   ```bash
+   python3.12 -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   pip install -r requirements.txt
+   ```
+
+3. **Set up environment variables** (if needed):
    Create a `.env` file in the root directory:
    ```bash
    # Example .env
@@ -173,24 +170,29 @@ MPVRP-CC/
 
 ## Usage
 
-### Quick Start Script
+### Quick Start
 
-Use the helper script from the project root to launch the API with environment variables preconfigured:
+From the project root, launch the API with `uv`:
 
 ```bash
-./start.sh
+export SECRET_KEY=your-secret-key-here
+export DATABASE_URL=${DATABASE_URL:-sqlite:///./mpvrp_scoring.db}
+uv run uvicorn backup.app.main:app --host 0.0.0.0 --port 8000 --workers 2
 ```
-
-What it does:
-
-- Requires `SECRET_KEY` to be set in the environment before startup
-- Exports `DATABASE_URL` (defaults to `sqlite:///./mpvrp_scoring.db` if not already set)
-- Starts the server with `uvicorn backup.app.main:app --host 0.0.0.0 --port 8000 --workers 2`
 
 After startup:
 
 - API: `http://localhost:8000`
 - Docs: `http://localhost:8000/docs`
+
+### Docker
+
+Build and run with Docker:
+
+```bash
+docker build -t mpvrp-cc .
+docker run --rm -p 8000:8000 -e SECRET_KEY=your-secret-key-here mpvrp-cc
+```
 
 ### API Endpoints
 
@@ -293,8 +295,7 @@ For complete API documentation, visit `/docs` when the server is running.
 
 1. **Start the development server**:
    ```bash
-   cd backup
-   uvicorn app.main:app --reload
+   uv run uvicorn backup.app.main:app --reload
    ```
    
    The API will be available at `http://localhost:8000`
@@ -329,16 +330,16 @@ Key dependencies include:
 
 ```bash
 # Run all tests
-pytest
+uv run pytest
 
 # Run with coverage
-pytest --cov=backup tests/
+uv run pytest --cov=backup tests/
 
 # Run specific test file
-pytest tests/test_integration.py
+uv run pytest tests/test_integration.py
 
 # Run specific test
-pytest tests/test_api.py::test_health_check
+uv run pytest tests/test_api.py::TestApiEndpointsWithTestClient::test_health_endpoint
 ```
 
 ### Code Structure Guidelines
@@ -396,12 +397,12 @@ The project includes comprehensive test coverage:
 
 Run tests with pytest:
 ```bash
-pytest
+uv run pytest
 ```
 
 Generate coverage report:
 ```bash
-pytest --cov=backup --cov-report=html
+uv run pytest --cov=backup --cov-report=html
 ```
 
 ---

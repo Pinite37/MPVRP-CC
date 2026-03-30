@@ -24,81 +24,46 @@
             <li><a href="../index.html">Home</a></li>
             <li><a href="scoreboard.html">Scoreboard</a></li>
             <li><a href="submission.html" class="active">Submission</a></li>
-            <li id="nav-team-name" style="display:none; color:#3C27F5; font-weight:bold; font-size:15px; padding: 0 5px;"></li>
-            <li id="nav-logout-li" style="display:none;">
-                <a href="#" onclick="logout(); return false;" style="color:#e74c3c;">Logout</a>
-            </li>
+            <li><a href="tools.html">Tools</a></li>
         </ul>
     </nav>
 </header>
 
 <section>
+    <div class="auth-container">
+        <h2>Submit your solutions</h2>
+        <p class="auth-subtitle">Upload one <code>.zip</code> file to evaluate your MPVRP-CC solutions.</p>
 
-
-    <div id="auth-section" class="auth-container">
-        <h2>Team Area</h2>
-        <p class="auth-subtitle">Log in to submit your solutions and track your score.</p>
-
-        <div class="tabs">
-            <button id="tab-login"    class="active" onclick="switchTab('login')">Login</button>
-            <button id="tab-register"                onclick="switchTab('register')">Register</button>
+        <div class="msg-banner msg-banner--info-static">
+            If this is your first submission, provide your <strong>name</strong> and <strong>email</strong>.
+            If you already submitted before, only your <strong>email</strong> and <code>.zip</code> file are required.
         </div>
-
-        <form id="auth-form" onsubmit="handleAuth(event)">
-            <div id="group-team" class="form-group" style="display:none;">
-                <label for="team_name">Team name</label>
-                <input type="text" id="team_name" autocomplete="organization">
-            </div>
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" required autocomplete="email">
-            </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <div class="password-wrapper">
-                    <input type="password" id="password" required autocomplete="current-password">
-                    <button type="button" class="toggle-password" id="toggle-password" onclick="togglePasswordVisibility()">
-                        <span id="password-icon">🙈</span>
-                    </button>
-                </div>
-            </div>
-            <button type="submit" id="submit-btn" class="btn-auth">Log in</button>
-        </form>
-    </div>
-
-    <!-- ── ESPACE UTILISATEUR (visible si connecté) ────────── -->
-    <div id="user-section" class="user-space">
-
-        <h2><span class="greeting-welcome">Kúabɔ́</span>, <span id="team-name-display">–</span></h2>
 
         <div class="upload-card">
-            <h3>Upload your solutions</h3>
-            <p class="upload-note">Submit one <code>.zip</code> file that includes the three category folders:</p>
+            <h3>Upload package</h3>
+            <p class="upload-note">Expected structure inside the ZIP:</p>
             <p class="upload-folders"><code>small/</code> <span>|</span> <code>medium/</code> <span>|</span> <code>large/</code></p>
-            <p class="upload-hint">Each folder should contain your corresponding <code>.dat</code> solution files. You can submit incomplete folders.</p>
-            <input type="file" id="zip-file" accept=".zip">
-            <button type="button" id="upload-btn" class="btn-upload" onclick="handleFileUpload()">
-                Start evaluation
-            </button>
+            <p class="upload-hint">Each folder may contain your corresponding <code>.dat</code> files.</p>
+
+            <form id="submission-form" onsubmit="handleFileUpload(event)">
+                <div class="form-group form-group--left">
+                    <label for="name">Name (required for first submission)</label>
+                    <input type="text" id="name" autocomplete="name" placeholder="Your team or participant name">
+                </div>
+
+                <div class="form-group form-group--left">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" required autocomplete="email" placeholder="team@example.com">
+                </div>
+
+                <div class="form-group form-group--left">
+                    <label for="zip-file">ZIP file</label>
+                    <input type="file" id="zip-file" accept=".zip" required>
+                </div>
+
+                <button type="submit" id="upload-btn" class="btn-upload">Start evaluation</button>
+            </form>
         </div>
-
-
-        <h3 style="margin-top:30px;">Your history</h3>
-        <table id="history-table">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Date</th>
-                    <th>Weighted score</th>
-                    <th>Valid solutions</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody id="history-body"></tbody>
-        </table>
-
-        <button class="btn-logout" onclick="logout()">Logout</button>
     </div>
 
 </section>

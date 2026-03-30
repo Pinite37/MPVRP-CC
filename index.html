@@ -24,12 +24,9 @@
             <li><a href="#documentation">Documentation</a></li>
             <li><a href="#instances">Instances</a></li>
             <li><a href="#visualization">Visualisation</a></li>
-            <li><a href="#tools">Outils</a></li>
+            <li><a href="pages/tools.html">Tools</a></li>
             <li><a href="pages/scoreboard.html">Scoreboard</a></li>
             <li><a href="pages/submission.html" class="nav-cta">Submission</a></li>
-            <li id="nav-logout" style="display:none;">
-                <a href="#" onclick="logoutFromIndex()" style="color:#e74c3c;">Logout</a>
-            </li>
         </ul>
     </nav>
 </header>
@@ -113,14 +110,6 @@
     </p>
 </section>
 
-<section id="tools">
-    <h2>Outils</h2>
-    <p>
-        We provide a suite of tools to assist in model testing, including a validator for solution certification and a synthetic instance generator. For implementation details and endpoint specifications, visit the official
-        <a href="https://mpvrp-cc.onrender.com/docs" target="_blank">documentation</a>.
-    </p>
-</section>
-
 <footer>
     <p>Laboratory of Research in Computer Science and Applications (LRSIA), 2026</p>
 </footer>
@@ -133,18 +122,6 @@
     mobileMenu.addEventListener('click', () => navLinks.classList.toggle('active'));
     document.querySelectorAll('.nav-links a').forEach(link => {
         link.addEventListener('click', () => navLinks.classList.remove('active'));
-    });
-
-    // ── Logout conditionnel ───────────────────────────────────
-    function logoutFromIndex() {
-        localStorage.removeItem('token');
-        window.location.replace(window.location.pathname);
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-        if (localStorage.getItem('token')) {
-            document.getElementById('nav-logout').style.display = 'inline';
-        }
     });
 </script>
 

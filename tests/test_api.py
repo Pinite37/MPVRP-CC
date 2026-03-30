@@ -395,3 +395,60 @@ class TestApiErrorHandling:
         )
 
         assert response.status_code == 422
+
+
+class TestScoreboardEndpoint:
+    """Regression tests for scoreboard route payload normalization."""
+
+    def test_extract_value_date_returns_iso_string(self):
+        """Notion date property should be normalized to date.start string."""
+        from backup.database.notion import _extract_value
+
+        value = _extract_value({
+            "type": "date",
+            "date": {
+                "start": "2026-03-30T09:29:24.160+00:00",
+                "end": None,
+                "time_zone": None,
+            },
+        })
+
+        assert value == "2026-03-30T09:29:24.160+00:00"
+
+    def test_scoreboard_handles_notion_date_object(self, client, monkeypatch):
+        """/scoreboard should return 200 even when Notion date is nested object."""
+        import backup.app.routes.scoreboard as scoreboard_route
+
+        monkeypatch.setattr(scoreboard_route, "DATA_SOURCE_ID", "test-data-source")
+
+        def fake_get_all_entries(_data_source_id):
+            return [{
+                "properties": {
+                    "Rank": {"type": "number", "number": 1},
+                    "Name": {"type": "rich_text", "rich_text": [{"plain_text": "Team A"}]},
+                    "Score": {"type": "number", "number": 123.456},
+                    "Feasible solutions": {"type": "number", "number": 150},
+                    "Submission date": {
+                        "type": "date",
+                        "date": {
+                            "start": "2026-03-30T09:29:24.160+00:00",
+                            "end": None,
+                            "time_zone": None,
+                        },
+                    },
+                }
+            }]
+
+        monkeypatch.setattr(scoreboard_route, "get_all_entries", fake_get_all_entries)
+
+        response = client.get("/scoreboard")
+
+        assert response.status_code == 200
+        data = response.json()
+        assert len(data) == 1
+        assert data[0]["rank"] == 1
+        assert data[0]["team"] == "Team A"
+        assert data[0]["score"] == 123.46
+        assert data[0]["instances_validated"] == "150/150"
+        assert data[0]["last_submission"] == "2026-03-30T09:29:24.160+00:00"
+

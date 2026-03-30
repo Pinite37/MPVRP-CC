@@ -1,18 +1,17 @@
 import os
-import shutil
 import logging
-from contextlib import asynccontextmanager
 
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-import backup.database.models_db as models
-from backup.database.db import engine
-from backup.app.routes import generator, model, scoring, scoreboard, auth
+from backup.app.routes import generator, model, scoring, scoreboard
 
 load_dotenv()
+
+FRONTEND_DEV_URL = os.getenv("FRONTEND_DEV_URL", "")
 FRONTEND_PROD_URL = os.getenv("FRONTEND_PROD_URL", "")
+FRONTEND_PROD_URL_2 = os.getenv("FRONTEND_PROD_URL_2", "")
 
 logging.basicConfig(
     level=os.getenv("LOG_LEVEL", "INFO").upper(),
@@ -21,31 +20,14 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-ALLOWED_ORIGINS = ["http://localhost:3000", "http://127.0.0.1:3000", "https://ifri-ai-classes.github.io", FRONTEND_PROD_URL]
+ALLOWED_ORIGINS = [FRONTEND_PROD_URL, FRONTEND_PROD_URL_2, FRONTEND_DEV_URL]
 logger.info("CORS allow-list configured with %s origin(s)", len(ALLOWED_ORIGINS))
 
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    # Création des tables
-    models.Base.metadata.create_all(bind=engine)
-
-    # Nettoyage de temp/ au démarrage
-    temp_dir = "temp"
-    if os.path.exists(temp_dir):
-        orphans = os.listdir(temp_dir)
-        if orphans:
-            logger.info("Startup cleanup: removing %s orphan file(s) in temp/", len(orphans))
-            shutil.rmtree(temp_dir)
-    os.makedirs(temp_dir, exist_ok=True)
-
-    yield  
 
 app = FastAPI(
     title="MPVRP-CC API",
     description="API for generating instances and verifying solutions to the MPVRP-CC problem (Multi-Product Vehicle Routing Problem with Changeover Cost)",
     version="1.0.0",
-    lifespan=lifespan
 )
 
 # Configuration CORS pour permettre les appels depuis n'importe quelle origine
@@ -54,14 +36,13 @@ app.add_middleware(
     allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"],
+    allow_headers=["*"]
 )
 
 # Inclure les routes
 app.include_router(generator.router)
 app.include_router(model.router)
 app.include_router(scoring.router)
-app.include_router(auth.router)
 app.include_router(scoreboard.router)
 
 @app.api_route("/", methods=["GET", "HEAD"], tags=["Root"])

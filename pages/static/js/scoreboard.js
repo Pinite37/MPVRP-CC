@@ -1,42 +1,14 @@
-const API_URL = window.APP_CONFIG?.API_URL || "https://mpvrppythonapi.pinite37.me";
+const API_URL = window.APP_CONFIG?.API_URL;
 
 // ── Nav mobile ───────────────────────────────────────────
 document.getElementById('mobile-menu').addEventListener('click', () => {
     document.getElementById('nav-links').classList.toggle('active');
 });
 
-// ── Session (logout conditionnel) ────────────────────────
+// ── Init ─────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', () => {
-    if (localStorage.getItem('token')) {
-        // On récupère le nom d'Team depuis l'historique pour l'afficher dans la nav
-        fetchTeamName();
-        document.getElementById('nav-logout-li').style.display = 'inline';
-    }
     loadLeaderboard();
 });
-
-async function fetchTeamName() {
-    const token = localStorage.getItem('token');
-    if (!token) return;
-    try {
-        const res = await fetch(`${API_URL}/scoring/history`, {
-            headers: { 'Authorization': `Bearer ${token}` }
-        });
-        if (res.ok) {
-            const data = await res.json();
-            const el = document.getElementById('nav-team-name');
-            el.innerText = `👤 ${data.team_name}`;
-            el.style.display = 'inline';
-        } else if (res.status === 401) {
-            logout();
-        }
-    } catch (_) {}
-}
-
-function logout() {
-    localStorage.removeItem('token');
-    window.location.replace(window.location.pathname);
-}
 
 // ── Leaderboard ──────────────────────────────────────────
 async function loadLeaderboard() {
@@ -53,7 +25,7 @@ async function loadLeaderboard() {
     refreshBtn.disabled = true;
 
     try {
-        const res = await fetch(`${API_URL}/scoreboard/`);
+        const res = await fetch(`${API_URL}/scoreboard`);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
         const data = await res.json();
@@ -91,8 +63,24 @@ async function loadLeaderboard() {
 
 function formatDate(isoStr) {
     if (!isoStr) return '—';
-    const normalized = isoStr.replace(' ', 'T').replace(/Z?$/, 'Z');
-    const d = new Date(normalized);
-    if (isNaN(d)) return isoStr;
-    return d.toLocaleString('fr-FR', { timeZone: 'Africa/Porto-Novo' });
+
+    try {
+        const d = new Date(isoStr);
+        if (isNaN(d.getTime())) return isoStr;
+
+        const months = ['January', 'February', 'March', 'April', 'May', 'June',
+                        'July', 'August', 'September', 'October', 'November', 'December'];
+        const month = months[d.getUTCMonth()];
+        const day = d.getUTCDate();
+        const year = d.getUTCFullYear();
+
+        let hours = d.getUTCHours();
+        const minutes = String(d.getUTCMinutes()).padStart(2, '0');
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12 || 12;
+
+        return `${month} ${day}, ${year} ${hours}:${minutes} ${ampm} (UTC)`;
+    } catch (err) {
+        return isoStr;
+    }
 }
