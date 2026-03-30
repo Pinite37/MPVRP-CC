@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tools — MPVRP-CC</title>
+    <link rel="stylesheet" href="static/css/style.css">
+    <link rel="stylesheet" href="static/css/tools.css">
+</head>
+<body>
+
+<header>
+    <h1>
+        MPVRP-CC
+        <span>Tools & Utilities</span>
+    </h1>
+    <nav>
+        <div class="menu-toggle" id="mobile-menu">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+        <ul class="nav-links" id="nav-links">
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="scoreboard.html">Scoreboard</a></li>
+            <li><a href="submission.html">Submission</a></li>
+            <li><a href="tools.html" class="active">Tools</a></li>
+        </ul>
+    </nav>
+</header>
+
+<section>
+    <div class="tools-container">
+        <h2>Developer Tools</h2>
+        <p class="tools-subtitle">We provide a suite of tools to assist in model testing, including a validator for solution certification and a synthetic instance generator.</p>
+
+        <!-- Tabs Navigation -->
+        <div class="tabs-nav">
+            <button class="tab-btn active" data-tab="generator">Instance Generator</button>
+            <button class="tab-btn" data-tab="verifier">Solution Verifier</button>
+        </div>
+
+        <!-- TAB 1: Instance Generator -->
+        <div id="generator" class="tab-content active">
+            <div class="tool-card">
+                <h3>Generate MPVRP-CC Instance</h3>
+                <p class="tool-description">
+                    Create a new MPVRP-CC instance with custom parameters.
+                    Modify the parameters below to generate different instance sizes and characteristics.
+                </p>
+
+                <form id="generator-form" onsubmit="handleGeneratorSubmit(event)">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="gen-id">Instance ID *</label>
+                            <input type="text" id="gen-id" required placeholder="e.g., MPVRP_01">
+                        </div>
+                        <div class="form-group">
+                            <label for="gen-vehicles">Number of Vehicles *</label>
+                            <input type="number" id="gen-vehicles" required min="1" value="5" placeholder="5">
+                        </div>
+                        <div class="form-group">
+                            <label for="gen-depots">Number of Depots *</label>
+                            <input type="number" id="gen-depots" required min="1" value="2" placeholder="2">
+                        </div>
+                        <div class="form-group">
+                            <label for="gen-garages">Number of Garages *</label>
+                            <input type="number" id="gen-garages" required min="1" value="2" placeholder="2">
+                        </div>
+                        <div class="form-group">
+                            <label for="gen-stations">Number of Stations *</label>
+                            <input type="number" id="gen-stations" required min="1" value="10" placeholder="10">
+                        </div>
+                        <div class="form-group">
+                            <label for="gen-products">Number of Products *</label>
+                            <input type="number" id="gen-products" required min="1" value="3" placeholder="3">
+                        </div>
+                        <div class="form-group">
+                            <label for="gen-maxcoord">Max Coordinate</label>
+                            <input type="number" id="gen-maxcoord" min="1" value="100" placeholder="100">
+                        </div>
+                        <div class="form-group">
+                            <label for="gen-mincap">Min Capacity</label>
+                            <input type="number" id="gen-mincap" min="1" value="500" placeholder="500">
+                        </div>
+                        <div class="form-group">
+                            <label for="gen-maxcap">Max Capacity</label>
+                            <input type="number" id="gen-maxcap" min="1" value="1000" placeholder="1000">
+                        </div>
+                        <div class="form-group">
+                            <label for="gen-mintrans">Min Transition Cost</label>
+                            <input type="number" id="gen-mintrans" min="0" value="1" placeholder="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="gen-maxtrans">Max Transition Cost</label>
+                            <input type="number" id="gen-maxtrans" min="1" value="50" placeholder="50">
+                        </div>
+                        <div class="form-group">
+                            <label for="gen-mindemand">Min Demand</label>
+                            <input type="number" id="gen-mindemand" min="1" value="10" placeholder="10">
+                        </div>
+                        <div class="form-group">
+                            <label for="gen-maxdemand">Max Demand</label>
+                            <input type="number" id="gen-maxdemand" min="1" value="100" placeholder="100">
+                        </div>
+                        <div class="form-group">
+                            <label for="gen-seed">Seed (optional)</label>
+                            <input type="number" id="gen-seed" placeholder="Leave empty for random">
+                        </div>
+                    </div>
+
+                    <button type="submit" id="gen-submit-btn" class="btn-submit">Generate Instance</button>
+                </form>
+
+                <div id="gen-status" class="status-message" style="display: none;"></div>
+            </div>
+        </div>
+
+        <!-- TAB 2: Solution Verifier -->
+        <div id="verifier" class="tab-content">
+            <div class="tool-card">
+                <h3>Verify MPVRP-CC Solution</h3>
+                <p class="tool-description">
+                    Upload an instance file and its corresponding solution to check feasibility.
+                    The verifier will perform comprehensive validation including capacity constraints,
+                    demand fulfillment, and metric computation.
+                </p>
+
+                <form id="verifier-form" onsubmit="handleVerifierSubmit(event)">
+                    <div class="form-grid form-grid--single">
+                        <div class="form-group">
+                            <label for="ver-instance">Instance File (.dat) *</label>
+                            <input type="file" id="ver-instance" accept=".dat" required>
+                            <p class="file-hint">Upload the MPVRP-CC instance file</p>
+                        </div>
+                        <div class="form-group">
+                            <label for="ver-solution">Solution File (.dat) *</label>
+                            <input type="file" id="ver-solution" accept=".dat" required>
+                            <p class="file-hint">Upload the solution file</p>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="ver-submit-btn" class="btn-submit">Verify Solution</button>
+                </form>
+
+                <div id="ver-status" class="status-message" style="display: none;"></div>
+                <div id="ver-results" class="verification-results" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <p>Laboratory of Research in Computer Science and Applications (LRSIA), 2026</p>
+</footer>
+
+<script src="static/js/config.js"></script>
+<script src="static/js/auth.js"></script>
+<script src="static/js/tools.js"></script>
+</body>
+</html>
+

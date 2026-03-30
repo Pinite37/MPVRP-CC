@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MPVRP-CC Solution Visualizer | Multi-Product Vehicle Routing Problem</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="static/css/visualisation.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Toggle Button -->
+        <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()" title="Toggle Panel">
+            <span class="toggle-icon">◀</span>
+        </button>
+
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2><a href="../index.html" style="text-decoration: none; color: inherit;">MPVRP-CC</a></h2>
+                <span class="subtitle">Route Visualizer</span>
+            </div>
+
+            <!-- Upload Section -->
+            <div class="panel-section">
+                <div class="section-title">Data Import</div>
+                <div class="upload-row">
+                    <div class="upload-compact" id="instanceZone" onclick="document.getElementById('instanceUpload').click()">
+                        <span class="upload-emoji">📋</span>
+                        <span class="upload-label">Instance</span>
+                        <span class="upload-status" id="instanceStatus">⏳</span>
+                    </div>
+                    <input type="file" id="instanceUpload" class="file-input" accept=".json,.dat,.txt">
+
+                    <div class="upload-compact" id="solutionZone" onclick="document.getElementById('solutionUpload').click()">
+                        <span class="upload-emoji">🎯</span>
+                        <span class="upload-label">Solution</span>
+                        <span class="upload-status" id="solutionStatus">⏳</span>
+                    </div>
+                    <input type="file" id="solutionUpload" class="file-input" accept=".json,.dat,.txt">
+                </div>
+            </div>
+
+            <!-- Metrics Section -->
+            <div class="panel-section">
+                <div class="section-title">Metrics</div>
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span class="metric-value" id="stat-dist">0.00</span>
+                        <span class="metric-label">Distance (km)</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-value" id="stat-routing">0.00</span>
+                        <span class="metric-label">Changes Cost</span>
+                    </div>
+                    <!--<div class="metric">
+                        <span class="metric-value" id="stat-exchanges">0</span>
+                        <span class="metric-label">Exchanges</span>
+                    </div>-->
+                    <div class="metric">
+                        <span class="metric-value" id="stat-trucks">0</span>
+                        <span class="metric-label">Trucks</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-value" id="stat-segments">0</span>
+                        <span class="metric-label">Segments</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-value" id="stat-status">-</span>
+                        <span class="metric-label">Status</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Legend Section -->
+            <div class="panel-section">
+                <div class="section-title">Legend</div>
+                <div class="legend-compact">
+                    <div class="legend-row"><span>🏢</span> Garage</div>
+                    <div class="legend-row"><span>🏪</span> Depot</div>
+                    <div class="legend-row"><span>⛽</span> Station</div>
+                </div>
+            </div>
+
+            <!-- Fleet Section -->
+            <div class="panel-section">
+                <div class="section-title">Fleet</div>
+                <div class="fleet-compact" id="fleet-legend">
+                    <div class="fleet-placeholder">Load a solution</div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Map Area -->
+        <main class="map-area">
+            <div class="canvas-wrapper">
+                <canvas id="canvas"></canvas>
+            </div>
+
+            <div class="empty-state" id="emptyState">
+                <div class="empty-icon">🗺️</div>
+                <div class="empty-title">Ready to Visualize</div>
+                <div class="empty-desc">Upload an instance and solution file to view routes</div>
+            </div>
+
+            <!-- Depot Inventory Panel (top-left) -->
+            <div class="depot-inventory-panel" id="depotInventoryPanel">
+                <div class="depot-panel-header">
+                    <span>📦 Depot Inventory</span>
+                    <button class="depot-toggle" onclick="toggleDepotPanel()" title="Toggle">−</button>
+                </div>
+                <div class="depot-panel-content" id="depotInventory">
+                    <div class="depot-placeholder">Load an instance</div>
+                </div>
+            </div>
+
+            <!-- Floating Controls -->
+            <div class="floating-controls" id="floatingControls">
+                <div class="controls-inner">
+                    <button class="ctrl-btn primary" id="playBtn" onclick="togglePlay()" title="Play/Pause">
+                        <span id="playIcon">▶</span>
+                    </button>
+                    <button class="ctrl-btn" onclick="reset()" title="Reset">↺</button>
+                    <button class="ctrl-btn" onclick="stepBackward()" title="Step Back">⏮</button>
+                    <button class="ctrl-btn" onclick="stepForward()" title="Step Forward">⏭</button>
+
+                    <div class="timeline-mini">
+                        <input type="range" id="timeline" min="0" max="1" step="0.001" value="0" oninput="seek(this.value)">
+                        <span class="progress-label" id="progressText">0/0</span>
+                    </div>
+
+                    <div class="speed-mini">
+                        <input type="range" class="speed-slider" min="0.25" max="4" step="0.25" value="1" oninput="setSpeed(this.value)">
+                        <span class="speed-label" id="speedText">1x</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="map-overlay" id="mapOverlay" style="display: none;">
+                <div class="overlay-badge">
+                    <span class="dot"></span>
+                    <span id="overlayStatus">Ready</span>
+                </div>
+            </div>
+
+            <div id="tooltip" class="tooltip"></div>
+
+            <!-- Notification Container for Product Swaps -->
+            <div class="notification-container" id="notificationContainer"></div>
+        </main>
+    </div>
+
+    <script src="static/js/visualisation.js"></script>
+</body>
+</html>

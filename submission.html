@@ -1,0 +1,79 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submission — MPVRP-CC</title>
+    <link rel="stylesheet" href="static/css/style.css">
+    <link rel="stylesheet" href="static/css/submission.css">
+</head>
+<body>
+
+<header>
+    <h1>
+        MPVRP-CC
+        <span>Submission Area</span>
+    </h1>
+    <nav>
+        <div class="menu-toggle" id="mobile-menu">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+        <ul class="nav-links" id="nav-links">
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="scoreboard.html">Scoreboard</a></li>
+            <li><a href="submission.html" class="active">Submission</a></li>
+            <li><a href="tools.html">Tools</a></li>
+        </ul>
+    </nav>
+</header>
+
+<section>
+    <div class="auth-container">
+        <h2>Submit your solutions</h2>
+        <p class="auth-subtitle">Upload one <code>.zip</code> file to evaluate your MPVRP-CC solutions.</p>
+
+        <div class="msg-banner msg-banner--info-static">
+            If this is your first submission, provide your <strong>name</strong> and <strong>email</strong>.
+            If you already submitted before, only your <strong>email</strong> and <code>.zip</code> file are required.
+        </div>
+
+        <div class="upload-card">
+            <h3>Upload package</h3>
+            <p class="upload-note">Expected structure inside the ZIP:</p>
+            <p class="upload-folders"><code>small/</code> <span>|</span> <code>medium/</code> <span>|</span> <code>large/</code></p>
+            <p class="upload-hint">Each folder may contain your corresponding <code>.dat</code> files.</p>
+
+            <form id="submission-form" onsubmit="handleFileUpload(event)">
+                <div class="form-group form-group--left">
+                    <label for="name">Name (required for first submission)</label>
+                    <input type="text" id="name" autocomplete="name" placeholder="Your team or participant name">
+                </div>
+
+                <div class="form-group form-group--left">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" required autocomplete="email" placeholder="team@example.com">
+                </div>
+
+                <div class="form-group form-group--left">
+                    <label for="zip-file">ZIP file</label>
+                    <input type="file" id="zip-file" accept=".zip" required>
+                </div>
+
+                <button type="submit" id="upload-btn" class="btn-upload">Start evaluation</button>
+            </form>
+        </div>
+    </div>
+
+</section>
+
+<footer>
+    <p>Laboratory of Research in Computer Science and Applications (LRSIA), 2026</p>
+</footer>
+
+
+<script src="static/js/config.js"></script>
+<script src="static/js/auth.js"></script>
+</body>
+</html>

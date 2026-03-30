@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard — MPVRP-CC</title>
+    <link rel="stylesheet" href="static/css/style.css">
+    <link rel="stylesheet" href="static/css/scoreboard.css">
+</head>
+<body>
+
+<header>
+    <h1>
+        MPVRP-CC
+        <span>Scoreboard</span>
+    </h1>
+    <nav>
+        <div class="menu-toggle" id="mobile-menu">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+        <ul class="nav-links" id="nav-links">
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="scoreboard.html" class="active">Scoreboard</a></li>
+            <li><a href="submission.html">Submission</a></li>
+            <li><a href="tools.html">Tools</a></li>
+        </ul>
+    </nav>
+</header>
+
+<section>
+    <h2>
+        Overall scoreboard
+        <button class="btn-refresh" id="refresh-btn" onclick="loadLeaderboard()" title="Rafraîchir">↻ Refresh</button>
+    </h2>
+
+    <p class="leaderboard-meta">
+        Best submission per team — updated in real time.
+        <span id="lb-count"></span>
+    </p>
+
+    <div id="lb-state" class="lb-state">Loading scoreboard…</div>
+
+    <table id="leaderboard-table" style="display:none;">
+        <thead>
+            <tr>
+                <th>Rank</th>
+                <th>Team</th>
+                <th>Weighted score</th>
+                <th>Valid solutions</th>
+                <th>Last submission</th>
+            </tr>
+        </thead>
+        <tbody id="leaderboard-body"></tbody>
+    </table>
+</section>
+
+<footer>
+    <p>Laboratory of Research in Computer Science and Applications (LRSIA), 2026</p>
+</footer>
+
+<script src="static/js/config.js"></script>
+<script src="static/js/scoreboard.js"></script>
+</body>
+</html>
